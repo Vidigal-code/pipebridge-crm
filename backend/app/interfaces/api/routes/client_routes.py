@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import Response
 
 from app.application.dtos.client_dto import CreateClientRequest, ClientResponse
 from app.application.use_cases.create_client import CreateClientUseCase
@@ -87,8 +88,9 @@ async def delete_client(
     client_id: str,
     _user: dict = Depends(get_current_user),
     repo: DynamoDBClientRepository = Depends(get_client_repository),
-) -> None:
+):
     client = await repo.find_by_id(client_id)
     if not client:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado")
     await repo.delete(client_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
