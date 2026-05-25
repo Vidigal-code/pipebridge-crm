@@ -1,44 +1,45 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/shared/auth/provider";
 import { AlertTriangle } from "lucide-react";
-import Button from "@/shared/ui/button";
-import Loading from "@/shared/ui/loading";
 
 const REDIRECT_DELAY_MS = 5000;
 const AUTHENTICATED_REDIRECT = "/";
 const UNAUTHENTICATED_REDIRECT = "/login";
+const TOKEN_KEY = "pipebridge_token";
 
-function resolveRedirect(isAuthenticated: boolean): string {
-  return isAuthenticated ? AUTHENTICATED_REDIRECT : UNAUTHENTICATED_REDIRECT;
+function checkAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
+  return !!localStorage.getItem(TOKEN_KEY);
 }
 
-function resolveLabel(isAuthenticated: boolean): string {
-  return isAuthenticated ? "Voltar ao Dashboard" : "Ir para Login";
+function resolveRedirect(isAuth: boolean): string {
+  return isAuth ? AUTHENTICATED_REDIRECT : UNAUTHENTICATED_REDIRECT;
+}
+
+function resolveLabel(isAuth: boolean): string {
+  return isAuth ? "Voltar ao Dashboard" : "Ir para Login";
 }
 
 export default function NotFoundPage() {
-  const { isAuthenticated, isHydrating } = useAuth();
   const router = useRouter();
-
-  const redirectPath = resolveRedirect(isAuthenticated);
-  const buttonLabel = resolveLabel(isAuthenticated);
+  const [isAuth, setIsAuth] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (isHydrating) return;
+    setIsAuth(checkAuthenticated());
+    setReady(true);
+  }, []);
+
+  const redirectPath = resolveRedirect(isAuth);
+  const buttonLabel = resolveLabel(isAuth);
+
+  useEffect(() => {
+    if (!ready) return;
     const timer = setTimeout(() => router.replace(redirectPath), REDIRECT_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [isHydrating, redirectPath, router]);
-
-  if (isHydrating) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-surface">
-        <Loading />
-      </div>
-    );
-  }
+  }, [ready, redirectPath, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-surface px-4">
@@ -51,12 +52,14 @@ export default function NotFoundPage() {
         <p className="text-xs text-content-tertiary mb-8">
           Você será redirecionado automaticamente em alguns segundos...
         </p>
-        <Button
-          onClick={() => router.replace(redirectPath)}
-          className="w-full sm:w-auto px-8"
-        >
-          {buttonLabel}
-        </Button>
+        {ready && (
+          <button
+            onClick={() => router.replace(redirectPath)}
+            className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-xl font-medium transition-colors"
+          >
+            {buttonLabel}
+          </button>
+        )}
       </div>
     </div>
   );
