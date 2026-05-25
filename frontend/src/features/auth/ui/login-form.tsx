@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Lock } from "lucide-react";
+import Link from "next/link";
+import { Lock, Info } from "lucide-react";
 
 import { useAuth } from "@/shared/auth/provider";
 import apiClient from "@/shared/api/client";
@@ -27,6 +28,18 @@ function LoginHeader() {
         <p className="text-content-secondary text-sm mt-1">Acesse o painel administrativo</p>
       </div>
     </>
+  );
+}
+
+function AboutLink() {
+  return (
+    <Link
+      href="/sobre"
+      className="flex items-center justify-center gap-2 text-sm text-content-secondary hover:text-accent transition-colors"
+    >
+      <Info className="w-4 h-4" />
+      Sobre a plataforma
+    </Link>
   );
 }
 
@@ -65,6 +78,7 @@ export default function LoginForm() {
       <Input label="Email" type="text" placeholder="admin@mundoinvest.com" error={errors.email?.message} {...register("email")} />
       <Input label="Senha" type="password" placeholder="••••••••" error={errors.password?.message} {...register("password")} />
       <Button type="submit" loading={isSubmitting} className="w-full mt-2">Entrar</Button>
+      <AboutLink />
     </form>
   );
 }
