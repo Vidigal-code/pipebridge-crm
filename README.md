@@ -70,12 +70,28 @@ python -m pytest tests/ -v
 ```
 
 **Cobertura dos testes (49 testes):**
-- ✅ Criação de cliente com payload válido e salvamento no banco
+- ✅ CRUD completo de clientes (criar, listar, editar, remover)
 - ✅ Processamento do webhook com regra de prioridade correta
 - ✅ Bloqueio de event_id duplicado (idempotência)
 - ✅ Cliente não encontrado retorna 404
 - ✅ Validação de campos obrigatórios
 - ✅ Mutations GraphQL do Pipefy estruturadas corretamente
+
+### Endpoints da API
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `POST` | `/auth/login` | Autenticação JWT |
+| `PUT` | `/auth/password` | Alterar senha |
+| `POST` | `/clientes` | Criar cliente + createCard Pipefy |
+| `GET` | `/clientes` | Listar clientes |
+| `PUT` | `/clientes/{id}` | Atualizar cliente |
+| `DELETE` | `/clientes/{id}` | Remover cliente |
+| `POST` | `/webhooks/pipefy/card-updated` | Processar webhook |
+| `GET` | `/pipefy/cards` | Listar cards Pipefy |
+| `PUT` | `/pipefy/cards/{card_id}` | Editar card Pipefy |
+| `DELETE` | `/pipefy/cards/{card_id}` | Remover card Pipefy |
+| `GET` | `/health` | Health check |
 
 ### Exemplos de Requisição (curl)
 
@@ -272,6 +288,16 @@ Logs são salvos em `backend/logs/app.log` com rotação automática:
 - **Validação de senha forte** (8+ chars, maiúscula, minúscula, número, especial)
 - **Zero hardcodes** — todos os IDs de campos, credenciais, timeouts e nomes são configuráveis via `.env`
 
+### Frontend
+
+- **Design System** com tokens CSS (dark/light) — `surface`, `accent`, `border-subtle`
+- **FSD (Feature-Sliced Design)** — entities, features, shared, widgets
+- **Paginação via URL** (`?page=N`) com navegação browser back/forward
+- **Seleção com checkbox** para exclusão em lote de clientes
+- **ConfirmDialog global** para todas as ações destrutivas
+- **100% responsivo** — mobile-first, layouts empilhados em telas menores
+- **Componentes reutilizáveis** — Button, Input, Select, Card, Badge, Modal, Alert, Pagination, ConfirmDialog
+
 </details>
 
 ---
@@ -335,12 +361,28 @@ python -m pytest tests/ -v
 ```
 
 **Test coverage (49 tests):**
-- ✅ Client creation with valid payload and database persistence
+- ✅ Full client CRUD (create, list, update, delete)
 - ✅ Webhook processing with correct priority rule based on net worth
 - ✅ Duplicate event_id blocking (idempotency)
 - ✅ Client not found returns 404
 - ✅ Required field validation
 - ✅ Pipefy GraphQL mutations correctly structured
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/auth/login` | JWT authentication |
+| `PUT` | `/auth/password` | Change password |
+| `POST` | `/clientes` | Create client + createCard Pipefy |
+| `GET` | `/clientes` | List clients |
+| `PUT` | `/clientes/{id}` | Update client |
+| `DELETE` | `/clientes/{id}` | Remove client |
+| `POST` | `/webhooks/pipefy/card-updated` | Process webhook |
+| `GET` | `/pipefy/cards` | List Pipefy cards |
+| `PUT` | `/pipefy/cards/{card_id}` | Edit Pipefy card |
+| `DELETE` | `/pipefy/cards/{card_id}` | Remove Pipefy card |
+| `GET` | `/health` | Health check |
 
 ### Request Examples (curl)
 
@@ -531,5 +573,15 @@ The code already abstracts AWS clients via `AWSClientFactory`. Just remove the `
 - **Strong password validation** (8+ chars, uppercase, lowercase, number, special char)
 - **Rotating logs** with configurable size and backup count
 - **Zero hardcodes** — all field IDs, credentials, timeouts and names are configurable via `.env`
+
+### Frontend
+
+- **Design System** with CSS tokens (dark/light) — `surface`, `accent`, `border-subtle`
+- **FSD (Feature-Sliced Design)** — entities, features, shared, widgets
+- **URL-synced pagination** (`?page=N`) with browser back/forward support
+- **Checkbox selection** for bulk client deletion
+- **Global ConfirmDialog** for all destructive actions
+- **100% responsive** — mobile-first, stacked layouts on smaller screens
+- **Reusable components** — Button, Input, Select, Card, Badge, Modal, Alert, Pagination, ConfirmDialog
 
 </details>
