@@ -9,8 +9,12 @@ import { fetchClients, ClientTable } from "@/entities/client";
 import type { Client } from "@/shared/types";
 import Card from "@/shared/ui/card";
 import Loading from "@/shared/ui/loading";
+import Pagination from "@/shared/ui/pagination";
+import { usePagination } from "@/shared/lib/use-pagination";
 import { formatCurrency } from "@/shared/lib/formatters";
 import { STATUS_PROCESSADO, STATUS_AGUARDANDO } from "@/shared/lib/constants";
+
+const DASHBOARD_PAGE_SIZE = 10;
 
 interface StatConfig {
   icon: LucideIcon;
@@ -76,6 +80,7 @@ export default function ClientDashboard() {
   });
 
   const stats = useMemo(() => computeStats(clients), [clients]);
+  const { paginatedItems, currentPage, totalItems, goToPage } = usePagination(clients, DASHBOARD_PAGE_SIZE);
 
   if (isLoading) return <Loading />;
 
@@ -91,7 +96,13 @@ export default function ClientDashboard() {
         <h2 className="text-base sm:text-lg font-semibold text-content mb-4">
           Clientes Recentes
         </h2>
-        <ClientTable clients={clients} />
+        <ClientTable clients={paginatedItems} />
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          pageSize={DASHBOARD_PAGE_SIZE}
+          onPageChange={goToPage}
+        />
       </Card>
     </div>
   );

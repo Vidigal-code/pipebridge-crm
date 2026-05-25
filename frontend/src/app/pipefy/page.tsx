@@ -17,10 +17,14 @@ import Button from "@/shared/ui/button";
 import Input from "@/shared/ui/input";
 import Modal from "@/shared/ui/modal";
 import Loading from "@/shared/ui/loading";
+import ConfirmDialog from "@/shared/ui/confirm-dialog";
+import Pagination from "@/shared/ui/pagination";
+import { usePagination } from "@/shared/lib/use-pagination";
 import { formatDate } from "@/shared/lib/formatters";
 import { EMPTY_PLACEHOLDER } from "@/shared/lib/constants";
 
 const QUERY_KEY = ["pipefy-cards"];
+const PAGE_SIZE = 6;
 
 function findFieldValue(fields: PipefyCardField[], name: string): string {
   return fields.find((f) => f.name.toLowerCase() === name.toLowerCase())?.value || EMPTY_PLACEHOLDER;
@@ -44,11 +48,9 @@ function CardFieldRow({ label, value }: { label: string; value: string }) {
 function CardActions({
   onEdit,
   onDelete,
-  isDeleting,
 }: {
   onEdit: () => void;
   onDelete: () => void;
-  isDeleting: boolean;
 }) {
   return (
     <div className="flex gap-2 mt-3 pt-3 border-t border-border-subtle">
@@ -61,8 +63,7 @@ function CardActions({
       </button>
       <button
         onClick={onDelete}
-        disabled={isDeleting}
-        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors"
       >
         <Trash2 className="w-3.5 h-3.5" />
         Remover
@@ -75,12 +76,10 @@ function PipefyCardItem({
   card,
   onEdit,
   onDelete,
-  isDeleting,
 }: {
   card: PipefyCard;
   onEdit: (card: PipefyCard) => void;
   onDelete: (id: string) => void;
-  isDeleting: boolean;
 }) {
   return (
     <Card>
@@ -107,7 +106,6 @@ function PipefyCardItem({
       <CardActions
         onEdit={() => onEdit(card)}
         onDelete={() => onDelete(card.id)}
-        isDeleting={isDeleting}
       />
     </Card>
   );
@@ -187,11 +185,7 @@ function EditModal({
               onChange={handleFieldChange}
             />
           ))}
-        <Button
-          onClick={handleSave}
-          loading={isSaving}
-          className="w-full mt-2"
-        >
+        <Button onClick={handleSave} loading={isSaving} className="w-full mt-2">
           Salvar Alterações
         </Button>
       </div>
@@ -211,11 +205,14 @@ function EmptyState() {
 export default function PipefyCardsPage() {
   const queryClient = useQueryClient();
   const [editingCard, setEditingCard] = useState<PipefyCard | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { data: cards = [], isLoading } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: fetchPipefyCards,
   });
+
+  const { paginatedItems, currentPage, totalItems, goToPage } = usePagination(cards, PAGE_SIZE);
 
   const deleteMutation = useMutation({
     mutationFn: deletePipefyCard,
@@ -223,8 +220,12 @@ export default function PipefyCardsPage() {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
       toast.success("Card removido do Pipefy!");
+      setDeletingId(null);
     },
-    onError: () => toast.error("Erro ao remover card."),
+    onError: () => {
+      toast.error("Erro ao remover card.");
+      setDeletingId(null);
+    },
   });
 
   const updateMutation = useMutation({
@@ -241,15 +242,11 @@ export default function PipefyCardsPage() {
 
   const handleEdit = useCallback((card: PipefyCard) => setEditingCard(card), []);
   const handleCloseEdit = useCallback(() => setEditingCard(null), []);
-
-  const handleDelete = useCallback(
-    (id: string) => {
-      if (window.confirm("Tem certeza que deseja remover este card do Pipefy?")) {
-        deleteMutation.mutate(id);
-      }
-    },
-    [deleteMutation]
-  );
+  const handleRequestDelete = useCallback((id: string) => setDeletingId(id), []);
+  const handleCancelDelete = useCallback(() => setDeletingId(null), []);
+  const handleConfirmDelete = useCallback(() => {
+    if (deletingId) deleteMutation.mutate(deletingId);
+  }, [deletingId, deleteMutation]);
 
   const handleSave = useCallback(
     (cardId: string, fields: { fieldId: string; value: string }[]) => {
@@ -274,17 +271,24 @@ export default function PipefyCardsPage() {
       ) : cards.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {cards.map((card) => (
-            <PipefyCardItem
-              key={card.id}
-              card={card}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              isDeleting={deleteMutation.isPending}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {paginatedItems.map((card) => (
+              <PipefyCardItem
+                key={card.id}
+                card={card}
+                onEdit={handleEdit}
+                onDelete={handleRequestDelete}
+              />
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPageChange={goToPage}
+          />
+        </>
       )}
 
       <EditModal
@@ -293,6 +297,16 @@ export default function PipefyCardsPage() {
         onClose={handleCloseEdit}
         onSave={handleSave}
         isSaving={updateMutation.isPending}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deletingId}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Remover Card"
+        message="Tem certeza que deseja remover este card do Pipefy? Esta ação não pode ser desfeita."
+        confirmLabel="Remover"
+        loading={deleteMutation.isPending}
       />
     </div>
   );

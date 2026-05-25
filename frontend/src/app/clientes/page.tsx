@@ -10,6 +10,10 @@ import Button from "@/shared/ui/button";
 import Card from "@/shared/ui/card";
 import Modal from "@/shared/ui/modal";
 import Loading from "@/shared/ui/loading";
+import Pagination from "@/shared/ui/pagination";
+import { usePagination } from "@/shared/lib/use-pagination";
+
+const CLIENTS_PAGE_SIZE = 10;
 
 function PageHeader({ onCreateClick }: { onCreateClick: () => void }) {
   return (
@@ -39,6 +43,8 @@ export default function ClientesPage() {
     queryFn: fetchClients,
   });
 
+  const { paginatedItems, currentPage, totalItems, goToPage } = usePagination(clients, CLIENTS_PAGE_SIZE);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -47,7 +53,19 @@ export default function ClientesPage() {
       <PageHeader onCreateClick={openModal} />
 
       <Card>
-        {isLoading ? <Loading /> : <ClientTable clients={clients} />}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <ClientTable clients={paginatedItems} />
+            <Pagination
+              currentPage={currentPage}
+              totalItems={totalItems}
+              pageSize={CLIENTS_PAGE_SIZE}
+              onPageChange={goToPage}
+            />
+          </>
+        )}
       </Card>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Criar Novo Cliente">
