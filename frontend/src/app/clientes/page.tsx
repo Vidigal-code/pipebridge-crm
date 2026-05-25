@@ -15,12 +15,13 @@ import Input from "@/shared/ui/input";
 import Loading from "@/shared/ui/loading";
 import ConfirmDialog from "@/shared/ui/confirm-dialog";
 import Pagination from "@/shared/ui/pagination";
+import PageHeader from "@/shared/ui/page-header";
 import { usePagination } from "@/shared/lib/use-pagination";
 
 const QUERY_KEY = ["clients"];
 const PAGE_SIZE = 10;
 
-function PageHeader({
+function ClientActions({
   onCreateClick,
   selectedCount,
   onBulkDelete,
@@ -30,33 +31,25 @@ function PageHeader({
   onBulkDelete: () => void;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-      <div>
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-content">Clientes</h1>
-        <p className="text-content-secondary text-sm mt-1">
-          Gerencie os clientes e seus patrimônios
-        </p>
-      </div>
-      <div className="flex gap-2 w-full sm:w-auto">
-        {selectedCount > 0 && (
-          <Button
-            variant="danger"
-            onClick={onBulkDelete}
-            className="flex items-center gap-2 flex-1 sm:flex-none justify-center"
-          >
-            <Trash2 className="w-4 h-4" />
-            Excluir ({selectedCount})
-          </Button>
-        )}
+    <>
+      {selectedCount > 0 && (
         <Button
-          onClick={onCreateClick}
+          variant="danger"
+          onClick={onBulkDelete}
           className="flex items-center gap-2 flex-1 sm:flex-none justify-center"
         >
-          <Plus className="w-4 h-4" />
-          Novo Cliente
+          <Trash2 className="w-4 h-4" />
+          Excluir ({selectedCount})
         </Button>
-      </div>
-    </div>
+      )}
+      <Button
+        onClick={onCreateClick}
+        className="flex items-center gap-2 flex-1 sm:flex-none justify-center"
+      >
+        <Plus className="w-4 h-4" />
+        Novo Cliente
+      </Button>
+    </>
   );
 }
 
@@ -215,9 +208,15 @@ function ClientesContent() {
   return (
     <div>
       <PageHeader
-        onCreateClick={() => setIsCreateOpen(true)}
-        selectedCount={selectedIds.size}
-        onBulkDelete={handleBulkDelete}
+        title="Clientes"
+        description="Gerencie os clientes e seus patrimônios"
+        actions={
+          <ClientActions
+            onCreateClick={() => setIsCreateOpen(true)}
+            selectedCount={selectedIds.size}
+            onBulkDelete={handleBulkDelete}
+          />
+        }
       />
 
       <Card>

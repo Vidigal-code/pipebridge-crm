@@ -19,7 +19,10 @@ import Modal from "@/shared/ui/modal";
 import Loading from "@/shared/ui/loading";
 import ConfirmDialog from "@/shared/ui/confirm-dialog";
 import Pagination from "@/shared/ui/pagination";
+import PageHeader from "@/shared/ui/page-header";
+import RefreshButton from "@/shared/ui/refresh-button";
 import { usePagination } from "@/shared/lib/use-pagination";
+import { useRefreshQuery } from "@/shared/lib/use-refresh-query";
 import { formatDate } from "@/shared/lib/formatters";
 import { EMPTY_PLACEHOLDER } from "@/shared/lib/constants";
 
@@ -27,12 +30,16 @@ const QUERY_KEY = ["pipefy-cards"];
 const PAGE_SIZE = 6;
 
 function findFieldValue(fields: PipefyCardField[], name: string): string {
-  return fields.find((f) => f.name.toLowerCase() === name.toLowerCase())?.value || EMPTY_PLACEHOLDER;
+  return (
+    fields.find((f) => f.name.toLowerCase() === name.toLowerCase())?.value ||
+    EMPTY_PLACEHOLDER
+  );
 }
 
 function resolvePhaseVariant(phase: string): "success" | "warning" | "info" {
-  if (phase.toLowerCase().includes("fazendo")) return "info";
-  if (phase.toLowerCase().includes("feito") || phase.toLowerCase().includes("done")) return "success";
+  const lower = phase.toLowerCase();
+  if (lower.includes("fazendo")) return "info";
+  if (lower.includes("feito") || lower.includes("done")) return "success";
   return "warning";
 }
 
@@ -40,7 +47,9 @@ function CardFieldRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-start gap-2 py-1.5">
       <span className="text-xs text-content-tertiary shrink-0">{label}</span>
-      <span className="text-xs text-content text-right break-all">{value || EMPTY_PLACEHOLDER}</span>
+      <span className="text-xs text-content text-right break-all">
+        {value || EMPTY_PLACEHOLDER}
+      </span>
     </div>
   );
 }
@@ -85,15 +94,24 @@ function PipefyCardItem({
     <Card>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-content truncate">{card.title || findFieldValue(card.fields, "cliente_nome")}</p>
+          <p className="text-sm font-semibold text-content truncate">
+            {card.title || findFieldValue(card.fields, "cliente_nome")}
+          </p>
           <p className="text-xs text-content-tertiary mt-0.5">ID: {card.id}</p>
         </div>
-        <Badge label={card.phase || EMPTY_PLACEHOLDER} variant={resolvePhaseVariant(card.phase)} />
+        <Badge
+          label={card.phase || EMPTY_PLACEHOLDER}
+          variant={resolvePhaseVariant(card.phase)}
+        />
       </div>
 
       <div className="divide-y divide-border-subtle">
         {card.fields.map((field) => (
-          <CardFieldRow key={field.field_id || field.name} label={field.name} value={field.value} />
+          <CardFieldRow
+            key={field.field_id || field.name}
+            label={field.name}
+            value={field.value}
+          />
         ))}
       </div>
 
@@ -139,7 +157,10 @@ function EditModal({
   card: PipefyCard | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (cardId: string, fields: { fieldId: string; value: string }[]) => void;
+  onSave: (
+    cardId: string,
+    fields: { fieldId: string; value: string }[]
+  ) => void;
   isSaving: boolean;
 }) {
   const [editValues, setEditValues] = useState<Record<string, string>>({});
@@ -173,7 +194,11 @@ function EditModal({
   if (!card) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Editar: ${card.title || card.id}`}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Editar: ${card.title || card.id}`}
+    >
       <div className="flex flex-col gap-3">
         {card.fields
           .filter((f) => f.field_id)
@@ -197,7 +222,9 @@ function EmptyState() {
   return (
     <div className="text-center py-16">
       <ExternalLink className="w-12 h-12 text-content-tertiary mx-auto mb-4" />
-      <p className="text-content-secondary text-sm">Nenhum card encontrado no Pipefy</p>
+      <p className="text-content-secondary text-sm">
+        Nenhum card encontrado no Pipefy
+      </p>
     </div>
   );
 }
@@ -206,13 +233,17 @@ function PipefyCardsContent() {
   const queryClient = useQueryClient();
   const [editingCard, setEditingCard] = useState<PipefyCard | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { refresh, isRefreshing } = useRefreshQuery(QUERY_KEY);
 
   const { data: cards = [], isLoading } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: fetchPipefyCards,
   });
 
-  const { paginatedItems, currentPage, totalItems, goToPage } = usePagination(cards, PAGE_SIZE);
+  const { paginatedItems, currentPage, totalItems, goToPage } = usePagination(
+    cards,
+    PAGE_SIZE
+  );
 
   const deleteMutation = useMutation({
     mutationFn: deletePipefyCard,
@@ -229,8 +260,13 @@ function PipefyCardsContent() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ cardId, fields }: { cardId: string; fields: { fieldId: string; value: string }[] }) =>
-      updatePipefyCard(cardId, fields),
+    mutationFn: ({
+      cardId,
+      fields,
+    }: {
+      cardId: string;
+      fields: { fieldId: string; value: string }[];
+    }) => updatePipefyCard(cardId, fields),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
@@ -240,9 +276,15 @@ function PipefyCardsContent() {
     onError: () => toast.error("Erro ao atualizar card."),
   });
 
-  const handleEdit = useCallback((card: PipefyCard) => setEditingCard(card), []);
+  const handleEdit = useCallback(
+    (card: PipefyCard) => setEditingCard(card),
+    []
+  );
   const handleCloseEdit = useCallback(() => setEditingCard(null), []);
-  const handleRequestDelete = useCallback((id: string) => setDeletingId(id), []);
+  const handleRequestDelete = useCallback(
+    (id: string) => setDeletingId(id),
+    []
+  );
   const handleCancelDelete = useCallback(() => setDeletingId(null), []);
   const handleConfirmDelete = useCallback(() => {
     if (deletingId) deleteMutation.mutate(deletingId);
@@ -257,14 +299,13 @@ function PipefyCardsContent() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-content">
-          Cards Pipefy
-        </h1>
-        <p className="text-content-secondary text-sm mt-1">
-          Gerencie os cards diretamente no Pipefy em tempo real
-        </p>
-      </div>
+      <PageHeader
+        title="Cards Pipefy"
+        description="Gerencie os cards diretamente no Pipefy em tempo real"
+        actions={
+          <RefreshButton onClick={refresh} isRefreshing={isRefreshing} />
+        }
+      />
 
       {isLoading ? (
         <Loading />
