@@ -25,9 +25,6 @@ from app.interfaces.api.middleware.request_id import RequestIdMiddleware
 
 logger = logging.getLogger(__name__)
 
-SEED_MAX_RETRIES = 10
-SEED_RETRY_DELAY = 3
-
 
 async def _seed_admin_user(settings) -> None:
     factory = AWSClientFactory(settings)
@@ -54,19 +51,21 @@ async def _seed_admin_user(settings) -> None:
 
 
 async def _seed_with_retry(settings) -> None:
-    for attempt in range(1, SEED_MAX_RETRIES + 1):
+    max_retries = settings.seed_max_retries
+    delay = settings.seed_retry_delay
+    for attempt in range(1, max_retries + 1):
         try:
             await _seed_admin_user(settings)
             return
         except Exception as exc:
             logger.warning(
                 "Seed attempt %d/%d failed: %s — retrying in %ds",
-                attempt, SEED_MAX_RETRIES, exc, SEED_RETRY_DELAY,
+                attempt, max_retries, exc, delay,
             )
-            if attempt == SEED_MAX_RETRIES:
+            if attempt == max_retries:
                 logger.error("All seed attempts exhausted. Starting without admin user.")
                 return
-            await asyncio.sleep(SEED_RETRY_DELAY)
+            await asyncio.sleep(delay)
 
 
 @asynccontextmanager

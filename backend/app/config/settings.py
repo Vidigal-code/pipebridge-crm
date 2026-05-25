@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     log_max_bytes: int = 10_485_760
     log_backup_count: int = 5
 
+    seed_max_retries: int = 10
+    seed_retry_delay: int = 5
+
     @property
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.backend_cors_origins.split(",")]

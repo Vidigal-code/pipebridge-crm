@@ -69,3 +69,16 @@
     }
   }
 }
+
+@layer base {
+  select option {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    padding: 8px 12px;
+  }
+
+  .dark select option {
+    background-color: #0f172a;
+    color: #f8fafc;
+  }
+}
