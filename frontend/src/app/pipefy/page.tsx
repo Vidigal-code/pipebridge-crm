@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash2, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
@@ -202,7 +202,7 @@ function EmptyState() {
   );
 }
 
-export default function PipefyCardsPage() {
+function PipefyCardsContent() {
   const queryClient = useQueryClient();
   const [editingCard, setEditingCard] = useState<PipefyCard | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -309,5 +309,13 @@ export default function PipefyCardsPage() {
         loading={deleteMutation.isPending}
       />
     </div>
+  );
+}
+
+export default function PipefyCardsPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PipefyCardsContent />
+    </Suspense>
   );
 }

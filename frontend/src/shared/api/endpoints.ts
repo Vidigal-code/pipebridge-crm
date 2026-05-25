@@ -6,6 +6,7 @@ const ENDPOINTS = {
   clients: {
     list: "/clientes",
     create: "/clientes",
+    byId: (id: string) => `/clientes/${id}`,
   },
   webhooks: {
     cardUpdated: "/webhooks/pipefy/card-updated",

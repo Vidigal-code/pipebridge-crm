@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Users, TrendingUp, Clock, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -73,7 +73,7 @@ function computeStats(clients: Client[]): StatConfig[] {
   ];
 }
 
-export default function ClientDashboard() {
+function DashboardContent() {
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: fetchClients,
@@ -105,5 +105,13 @@ export default function ClientDashboard() {
         />
       </Card>
     </div>
+  );
+}
+
+export default function ClientDashboard() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

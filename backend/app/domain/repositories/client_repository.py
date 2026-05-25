@@ -25,3 +25,7 @@ class ClientRepository(ABC):
     @abstractmethod
     async def find_by_id(self, client_id: str) -> Client | None:
         ...
+
+    @abstractmethod
+    async def delete(self, client_id: str) -> None:
+        ...

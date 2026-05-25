@@ -52,6 +52,16 @@ class DynamoDBClientRepository(ClientRepository):
         )
         return client
 
+    async def update_full(self, client: Client) -> Client:
+        item = self._to_item(client)
+        await asyncio.to_thread(self._table.put_item, Item=item)
+        return client
+
+    async def delete(self, client_id: str) -> None:
+        await asyncio.to_thread(
+            self._table.delete_item, Key={"id": client_id}
+        )
+
     async def find_all(self) -> list[Client]:
         response = await asyncio.to_thread(self._table.scan)
         items = response.get("Items", [])

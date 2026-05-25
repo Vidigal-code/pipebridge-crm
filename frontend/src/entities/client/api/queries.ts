@@ -11,3 +11,12 @@ export async function createClient(payload: CreateClientPayload): Promise<Client
   const response = await apiClient.post<Client>(ENDPOINTS.clients.create, payload);
   return response.data;
 }
+
+export async function updateClient(id: string, payload: CreateClientPayload): Promise<Client> {
+  const response = await apiClient.put<Client>(ENDPOINTS.clients.byId(id), payload);
+  return response.data;
+}
+
+export async function deleteClient(id: string): Promise<void> {
+  await apiClient.delete(ENDPOINTS.clients.byId(id));
+}
