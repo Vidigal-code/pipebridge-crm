@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/shared/theme/provider";
 import { AuthGuard } from "@/shared/auth";
 import Sidebar from "@/widgets/sidebar";
 
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ["/login", "/sobre"];
 
 function AppShell({ children }: { children: React.ReactNode }) {
   return (

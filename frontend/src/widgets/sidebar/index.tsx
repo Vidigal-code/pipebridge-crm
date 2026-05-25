@@ -15,6 +15,7 @@ import {
   X,
   KeyRound,
   Layers,
+  Info,
 } from "lucide-react";
 import { useAuth } from "@/shared/auth/provider";
 import { useTheme } from "@/shared/theme/provider";
@@ -33,6 +34,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/webhooks", label: "Webhooks", icon: Webhook },
   { href: "/pipefy", label: "Cards Pipefy", icon: Layers },
   { href: "/configuracoes", label: "Alterar Senha", icon: KeyRound },
+  { href: "/sobre", label: "Sobre", icon: Info },
 ];
 
 const ACTIVE_STYLES = "bg-accent/10 text-accent shadow-sm";
