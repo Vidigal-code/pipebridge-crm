@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-surface: var(--bg-surface);
+  --color-surface-card: var(--bg-card);
+  --color-surface-input: var(--bg-input);
+  --color-border-subtle: var(--border-subtle);
+  --color-content: var(--text-content);
+  --color-content-secondary: var(--text-secondary);
+  --color-content-tertiary: var(--text-tertiary);
+}
+
+@layer base {
+  :root {
+    --bg-surface: #f1f5f9;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-input: rgba(0, 0, 0, 0.03);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --text-content: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+  }
+
+  .dark {
+    --bg-surface: #020617;
+    --bg-card: rgba(255, 255, 255, 0.05);
+    --bg-input: rgba(255, 255, 255, 0.05);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --text-content: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+  }
+
+  body {
+    @apply bg-surface text-content antialiased transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: animateIn 200ms ease-out;
+  }
+
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

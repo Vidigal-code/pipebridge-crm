@@ -1,0 +1,67 @@
+services:
+  localstack:
+    image: localstack/localstack:3.8
+    container_name: pipebridge-localstack
+    environment:
+      SERVICES: dynamodb,sqs,sns
+      DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./localstack:/etc/localstack/init/ready.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pipebridge-backend
+    env_file: .env
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depends_on:
+      localstack:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host ${BACKEND_HOST} --port ${BACKEND_PORT} --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pipebridge-frontend
+    env_file: .env
+    environment:
+      NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL}"
+      NEXT_PUBLIC_START_THEME: "${NEXT_PUBLIC_START_THEME}"
+      NEXT_PUBLIC_PIPEFY_PIPE_ID: "${NEXT_PUBLIC_PIPEFY_PIPE_ID}"
+      NEXT_PUBLIC_PIPEFY_FIELD_NOME: "${NEXT_PUBLIC_PIPEFY_FIELD_NOME}"
+      NEXT_PUBLIC_PIPEFY_FIELD_EMAIL: "${NEXT_PUBLIC_PIPEFY_FIELD_EMAIL}"
+      NEXT_PUBLIC_PIPEFY_FIELD_PATRIMONIO: "${NEXT_PUBLIC_PIPEFY_FIELD_PATRIMONIO}"
+      NEXT_PUBLIC_PIPEFY_FIELD_TIPO_SOLICITACAO: "${NEXT_PUBLIC_PIPEFY_FIELD_TIPO_SOLICITACAO}"
+      NEXT_PUBLIC_PIPEFY_FIELD_STATUS: "${NEXT_PUBLIC_PIPEFY_FIELD_STATUS}"
+      NEXT_PUBLIC_PIPEFY_FIELD_PRIORIDADE: "${NEXT_PUBLIC_PIPEFY_FIELD_PRIORIDADE}"
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+volumes:
+  localstack_data:
