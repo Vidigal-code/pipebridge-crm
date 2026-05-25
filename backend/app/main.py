@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -23,6 +24,9 @@ from app.interfaces.api.middleware.rate_limiter import RateLimiterMiddleware
 from app.interfaces.api.middleware.request_id import RequestIdMiddleware
 
 logger = logging.getLogger(__name__)
+
+SEED_MAX_RETRIES = 10
+SEED_RETRY_DELAY = 3
 
 
 async def _seed_admin_user(settings) -> None:
@@ -49,11 +53,27 @@ async def _seed_admin_user(settings) -> None:
     logger.info("Admin user seeded: %s", settings.admin_email)
 
 
+async def _seed_with_retry(settings) -> None:
+    for attempt in range(1, SEED_MAX_RETRIES + 1):
+        try:
+            await _seed_admin_user(settings)
+            return
+        except Exception as exc:
+            logger.warning(
+                "Seed attempt %d/%d failed: %s — retrying in %ds",
+                attempt, SEED_MAX_RETRIES, exc, SEED_RETRY_DELAY,
+            )
+            if attempt == SEED_MAX_RETRIES:
+                logger.error("All seed attempts exhausted. Starting without admin user.")
+                return
+            await asyncio.sleep(SEED_RETRY_DELAY)
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     setup_logging()
     settings = get_settings()
-    await _seed_admin_user(settings)
+    await _seed_with_retry(settings)
     yield
 
 
