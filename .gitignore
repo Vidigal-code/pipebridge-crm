@@ -39,3 +39,4 @@ Thumbs.db
 docker-compose.override.yml
 localstack/data/
 backend/logs/
+.idea/
