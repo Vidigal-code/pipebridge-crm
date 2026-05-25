@@ -31,10 +31,12 @@ class ProcessWebhookUseCase:
         client = await self._find_client(request.cliente_email)
 
         client.mark_as_processed()
+        effective_card_id = self._resolve_card_id(client, request.card_id)
+        client.card_id = effective_card_id
         await self._client_repo.update(client)
 
         pipefy_result = await self._pipefy_client.update_card_fields(
-            card_id=request.card_id,
+            card_id=effective_card_id,
             new_status=client.status,
             priority=client.prioridade,
         )
@@ -44,6 +46,10 @@ class ProcessWebhookUseCase:
         await self._notify_processed(client)
 
         return self._to_response(request, client, pipefy_result)
+
+    @staticmethod
+    def _resolve_card_id(client, request_card_id: str) -> str:
+        return client.card_id or request_card_id
 
     async def _ensure_not_duplicate(self, event_id: str) -> None:
         existing = await self._event_repo.find_by_event_id(event_id)

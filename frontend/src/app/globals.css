@@ -6,35 +6,50 @@
   --color-surface: var(--bg-surface);
   --color-surface-card: var(--bg-card);
   --color-surface-input: var(--bg-input);
+  --color-surface-hover: var(--bg-hover);
   --color-border-subtle: var(--border-subtle);
+  --color-border-focus: var(--border-focus);
   --color-content: var(--text-content);
   --color-content-secondary: var(--text-secondary);
   --color-content-tertiary: var(--text-tertiary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-glow: var(--accent-glow);
 }
 
 @layer base {
   :root {
     --bg-surface: #f1f5f9;
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --bg-input: rgba(0, 0, 0, 0.03);
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-input: rgba(0, 0, 0, 0.04);
+    --bg-hover: rgba(0, 0, 0, 0.06);
+    --border-subtle: rgba(0, 0, 0, 0.1);
+    --border-focus: #6366f1;
     --text-content: #0f172a;
     --text-secondary: #475569;
     --text-tertiary: #94a3b8;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-glow: rgba(99, 102, 241, 0.25);
   }
 
   .dark {
     --bg-surface: #020617;
     --bg-card: rgba(255, 255, 255, 0.05);
-    --bg-input: rgba(255, 255, 255, 0.05);
+    --bg-input: rgba(255, 255, 255, 0.06);
+    --bg-hover: rgba(255, 255, 255, 0.08);
     --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-focus: #818cf8;
     --text-content: #f8fafc;
     --text-secondary: #94a3b8;
     --text-tertiary: #64748b;
+    --accent: #818cf8;
+    --accent-hover: #6366f1;
+    --accent-glow: rgba(129, 140, 248, 0.25);
   }
 
   body {
-    @apply bg-surface text-content antialiased transition-colors duration-300;
+    @apply bg-surface text-content antialiased transition-colors duration-300 overflow-x-hidden;
   }
 }
 

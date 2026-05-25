@@ -1,15 +1,14 @@
 import { ReactNode } from "react";
+import { cn, CARD_BASE } from "@/shared/lib/styles";
 
 interface CardProps {
   children: ReactNode;
   className?: string;
 }
 
-export default function Card({ children, className = "" }: CardProps) {
+export default function Card({ children, className }: CardProps) {
   return (
-    <div
-      className={`bg-surface-card backdrop-blur-xl border border-border-subtle rounded-2xl p-6 shadow-xl transition-colors duration-300 ${className}`}
-    >
+    <div className={cn(CARD_BASE, "p-4 sm:p-6", className)}>
       {children}
     </div>
   );

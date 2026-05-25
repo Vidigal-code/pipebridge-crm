@@ -2,16 +2,18 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 
 import apiClient from "@/shared/api/client";
+import ENDPOINTS from "@/shared/api/endpoints";
 import { changePasswordSchema, type ChangePasswordFormData } from "../model/schema";
 import Button from "@/shared/ui/button";
 import Input from "@/shared/ui/input";
+import Alert from "@/shared/ui/alert";
 
 export default function ChangePasswordForm() {
-  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const {
     register,
@@ -22,21 +24,21 @@ export default function ChangePasswordForm() {
     resolver: zodResolver(changePasswordSchema),
   });
 
-  const onSubmit = async (data: ChangePasswordFormData) => {
-    setSuccess(false);
+  const onSubmit = useCallback(async (data: ChangePasswordFormData) => {
+    setSuccessMessage("");
     try {
-      await apiClient.put("/auth/password", {
+      await apiClient.put(ENDPOINTS.auth.password, {
         old_password: data.old_password,
         new_password: data.new_password,
       });
-      setSuccess(true);
+      setSuccessMessage("Senha alterada com sucesso!");
       toast.success("Senha alterada com sucesso!");
       reset();
     } catch (err: any) {
       const detail = err?.response?.data?.detail;
       toast.error(detail || "Erro ao alterar senha.");
     }
-  };
+  }, [reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -62,11 +64,7 @@ export default function ChangePasswordForm() {
         {...register("confirm_password")}
       />
 
-      {success && (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm text-center">
-          Senha alterada com sucesso!
-        </div>
-      )}
+      {successMessage && <Alert message={successMessage} variant="success" />}
 
       <Button type="submit" loading={isSubmitting} className="w-full mt-2">
         Alterar Senha

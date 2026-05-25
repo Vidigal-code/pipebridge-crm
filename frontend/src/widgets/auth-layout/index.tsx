@@ -8,6 +8,21 @@ import Sidebar from "@/widgets/sidebar";
 
 const PUBLIC_PATHS = ["/login"];
 
+function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthGuard>
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <main className="flex-1 w-full lg:ml-64 pt-16 lg:pt-0">
+          <div className="max-w-5xl mx-auto w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+            {children}
+          </div>
+        </main>
+      </div>
+    </AuthGuard>
+  );
+}
+
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isPublicPage = PUBLIC_PATHS.includes(pathname);
@@ -15,18 +30,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <AuthProvider>
-        {isPublicPage ? (
-          children
-        ) : (
-          <AuthGuard>
-            <div className="flex min-h-screen">
-              <Sidebar />
-              <main className="flex-1 lg:ml-64 p-4 pt-16 lg:p-8 lg:pt-8">
-                <div className="max-w-5xl mx-auto w-full">{children}</div>
-              </main>
-            </div>
-          </AuthGuard>
-        )}
+        {isPublicPage ? children : <AppShell>{children}</AppShell>}
       </AuthProvider>
     </ThemeProvider>
   );

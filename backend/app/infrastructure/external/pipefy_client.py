@@ -52,6 +52,21 @@ class PipefyClient:
         variables = self._update_fields_variables(card_id, new_status, priority)
         return await self._execute_with_fallback(mutation, variables, "updateFieldsValues")
 
+    async def list_cards(self) -> PipefyResult:
+        query = self._list_cards_query()
+        variables = {"pipeId": self._pipe_id}
+        return await self._execute_with_fallback(query, variables, "allCards")
+
+    async def update_card(self, card_id: str, fields: list[dict]) -> PipefyResult:
+        mutation = self._update_fields_query()
+        variables = {"input": {"nodeId": card_id, "values": fields}}
+        return await self._execute_with_fallback(mutation, variables, "updateFieldsValues")
+
+    async def delete_card(self, card_id: str) -> PipefyResult:
+        mutation = self._delete_card_query()
+        variables = {"input": {"id": card_id}}
+        return await self._execute_with_fallback(mutation, variables, "deleteCard")
+
     def _create_card_query(self) -> str:
         return """
             mutation createCard($input: CreateCardInput!) {
@@ -115,6 +130,43 @@ class PipefyClient:
             }
         }
 
+    def _list_cards_query(self) -> str:
+        return """
+            query allCards($pipeId: ID!) {
+                allCards(pipeId: $pipeId, first: 50) {
+                    edges {
+                        node {
+                            id
+                            title
+                            createdAt
+                            current_phase { name }
+                            fields { name field { id } value }
+                        }
+                    }
+                }
+            }
+        """
+
+    def _delete_card_query(self) -> str:
+        return """
+            mutation deleteCard($input: DeleteCardInput!) {
+                deleteCard(input: $input) {
+                    success
+                }
+            }
+        """
+
+    @property
+    def field_mapping(self) -> dict:
+        return {
+            "nome": self._field_nome,
+            "email": self._field_email,
+            "patrimonio": self._field_patrimonio,
+            "tipo_solicitacao": self._field_tipo_solicitacao,
+            "status": self._field_status,
+            "prioridade": self._field_prioridade,
+        }
+
     async def _execute_with_fallback(self, query: str, variables: dict, operation: str) -> PipefyResult:
         payload = self._build_payload(query, variables)
         self._log_request(operation, payload)
@@ -153,7 +205,7 @@ class PipefyClient:
                 message=f"Pipefy retornou erro, operação simulada localmente: {error_msg}",
             )
 
-        logger.info("✅ Pipefy [%s] enviado com sucesso para API real", operation)
+        logger.info("✅ Pipefy [%s] enviado com sucesso para API real — Response: %s", operation, json.dumps(data, ensure_ascii=False))
         return PipefyResult(status=PipefyStatus.SUCCESS, data=data)
 
     def _handle_fallback(self, operation: str, payload: dict) -> PipefyResult:

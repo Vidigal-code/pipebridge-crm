@@ -31,3 +31,17 @@ export interface WebhookResponse {
   prioridade: string | null;
   message: string;
 }
+
+export interface PipefyCardField {
+  field_id: string;
+  name: string;
+  value: string;
+}
+
+export interface PipefyCard {
+  id: string;
+  title: string;
+  phase: string;
+  created_at: string;
+  fields: PipefyCardField[];
+}

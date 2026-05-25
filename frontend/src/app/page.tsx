@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <div>
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-content">Dashboard</h1>
-        <p className="text-content-secondary mt-1">Visão geral do sistema de gestão de clientes</p>
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-content">Dashboard</h1>
+        <p className="text-content-secondary text-sm mt-1">
+          Visão geral do sistema de gestão de clientes
+        </p>
       </div>
       <ClientDashboard />
     </div>

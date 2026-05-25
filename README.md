@@ -54,7 +54,8 @@ docker compose up --build
 |---|---|
 | Frontend | http://localhost:3000 |
 | Backend API | http://localhost:8001 |
-| Swagger Docs | http://localhost:8001/docs |
+| Swagger PT-BR | http://localhost:8001/pt/docs |
+| Swagger EN | http://localhost:8001/en/docs |
 
 **Credenciais padrão:**
 - Email: `admin@mundoinvest.com`
@@ -199,7 +200,7 @@ pipebridge-crm/
 ├── backend/
 │   ├── app/
 │   │   ├── application/         # Use Cases + DTOs (regras de aplicação)
-│   │   ├── config/              # Settings (Pydantic)
+│   │   ├── config/              # Settings, Logging, Swagger Bilíngue
 │   │   ├── domain/              # Entities, Enums, Repository Interfaces
 │   │   ├── infrastructure/      # AWS, Auth, External (Pipefy), Repositories
 │   │   ├── interfaces/          # API Routes, Middleware, Dependencies
@@ -208,9 +209,9 @@ pipebridge-crm/
 ├── frontend/
 │   ├── src/
 │   │   ├── app/                 # Pages (Next.js App Router)
-│   │   ├── entities/            # Client, Webhook (FSD)
+│   │   ├── entities/            # Client, Webhook, Pipefy (FSD)
 │   │   ├── features/            # Auth, Create Client, Webhook, Change Password (FSD)
-│   │   ├── shared/              # UI, API, Auth, Theme, Config
+│   │   ├── shared/              # UI, API, Auth, Theme, Design Tokens
 │   │   ├── store/               # React Query Provider
 │   │   └── widgets/             # Sidebar, Dashboard, AuthLayout
 │   └── Dockerfile
@@ -318,7 +319,8 @@ docker compose up --build
 |---|---|
 | Frontend | http://localhost:3000 |
 | Backend API | http://localhost:8001 |
-| Swagger Docs | http://localhost:8001/docs |
+| Swagger PT-BR | http://localhost:8001/pt/docs |
+| Swagger EN | http://localhost:8001/en/docs |
 
 **Default credentials:**
 - Email: `admin@mundoinvest.com`
@@ -480,7 +482,7 @@ pipebridge-crm/
 ├── backend/
 │   ├── app/
 │   │   ├── application/         # Use Cases + DTOs (application rules)
-│   │   ├── config/              # Settings (Pydantic)
+│   │   ├── config/              # Settings, Logging, Bilingual Swagger
 │   │   ├── domain/              # Entities, Enums, Repository Interfaces
 │   │   ├── infrastructure/      # AWS, Auth, External (Pipefy), Repositories
 │   │   ├── interfaces/          # API Routes, Middleware, Dependencies
@@ -489,9 +491,9 @@ pipebridge-crm/
 ├── frontend/
 │   ├── src/
 │   │   ├── app/                 # Pages (Next.js App Router)
-│   │   ├── entities/            # Client, Webhook (FSD)
+│   │   ├── entities/            # Client, Webhook, Pipefy (FSD)
 │   │   ├── features/            # Auth, Create Client, Webhook, Change Password (FSD)
-│   │   ├── shared/              # UI, API, Auth, Theme, Config
+│   │   ├── shared/              # UI, API, Auth, Theme, Design Tokens
 │   │   ├── store/               # React Query Provider
 │   │   └── widgets/             # Sidebar, Dashboard, AuthLayout
 │   └── Dockerfile
