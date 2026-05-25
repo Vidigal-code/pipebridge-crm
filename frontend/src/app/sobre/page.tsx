@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Users,
   Webhook,
@@ -10,18 +9,14 @@ import {
   Zap,
   Bell,
   Code2,
-  ChevronRight,
-  Sun,
-  Moon,
   Boxes,
   FileText,
   Pencil,
   Trash2,
   CheckSquare,
-  ArrowLeft,
+  Sun,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useTheme } from "@/shared/theme/provider";
 
 const APP_TITLE = "PipeBridge CRM";
 const APP_SUBTITLE = "Client Management & Pipefy Integration";
@@ -170,32 +165,25 @@ function FrontendFeatureItem({ icon: Icon, label }: { icon: LucideIcon; label: s
 
 function HeroSection() {
   return (
-    <div className="text-center py-8 sm:py-12">
-      <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-1.5 rounded-full text-xs font-medium mb-6">
+    <div className="text-center mb-8">
+      <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-1.5 rounded-full text-xs font-medium mb-4">
         <Database className="w-3.5 h-3.5" />
         Mundo Invest — Teste Técnico
       </div>
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-content tracking-tight mb-4">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-content tracking-tight mb-3">
         {APP_TITLE}
       </h1>
-      <p className="text-lg sm:text-xl text-accent font-medium mb-4">{APP_SUBTITLE}</p>
-      <p className="text-sm sm:text-base text-content-secondary max-w-2xl mx-auto leading-relaxed mb-8">
+      <p className="text-base sm:text-lg text-accent font-medium mb-3">{APP_SUBTITLE}</p>
+      <p className="text-sm text-content-secondary max-w-2xl mx-auto leading-relaxed">
         {APP_DESCRIPTION}
       </p>
-      <Link
-        href="/login"
-        className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-xl font-medium transition-colors"
-      >
-        Acessar Plataforma
-        <ChevronRight className="w-4 h-4" />
-      </Link>
     </div>
   );
 }
 
 function FeaturesSection() {
   return (
-    <section className="py-8">
+    <section className="py-6">
       <SectionTitle>Funcionalidades</SectionTitle>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {FEATURES.map((feature) => (
@@ -208,7 +196,7 @@ function FeaturesSection() {
 
 function EndpointsSection() {
   return (
-    <section className="py-8">
+    <section className="py-6">
       <SectionTitle>API Endpoints</SectionTitle>
       <div className="bg-surface-card border border-border-subtle rounded-2xl p-4 sm:p-6">
         {ENDPOINTS.map((endpoint) => (
@@ -221,7 +209,7 @@ function EndpointsSection() {
 
 function TechSection() {
   return (
-    <section className="py-8">
+    <section className="py-6">
       <SectionTitle>Stack Tecnológico</SectionTitle>
       <div className="bg-surface-card border border-border-subtle rounded-2xl overflow-hidden">
         <table className="w-full text-sm">
@@ -244,7 +232,7 @@ function TechSection() {
 
 function FrontendSection() {
   return (
-    <section className="py-8">
+    <section className="py-6">
       <SectionTitle>Frontend</SectionTitle>
       <div className="bg-surface-card border border-border-subtle rounded-2xl p-4 sm:p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
@@ -257,9 +245,30 @@ function FrontendSection() {
   );
 }
 
+function FlowCard({ step, title, items }: { step: string; title: string; items: string[] }) {
+  return (
+    <div className="bg-surface-card border border-border-subtle rounded-2xl p-5">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white text-sm font-bold">
+          {step}
+        </div>
+        <h3 className="text-sm font-semibold text-content">{title}</h3>
+      </div>
+      <ul className="space-y-2">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-start gap-2 text-xs text-content-secondary">
+            <Bell className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function FlowSection() {
   return (
-    <section className="py-8">
+    <section className="py-6">
       <SectionTitle>Fluxos Principais</SectionTitle>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FlowCard
@@ -297,56 +306,9 @@ function FlowSection() {
   );
 }
 
-function FlowCard({ step, title, items }: { step: string; title: string; items: string[] }) {
-  return (
-    <div className="bg-surface-card border border-border-subtle rounded-2xl p-5">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white text-sm font-bold">
-          {step}
-        </div>
-        <h3 className="text-sm font-semibold text-content">{title}</h3>
-      </div>
-      <ul className="space-y-2">
-        {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-content-secondary">
-            <Bell className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const Icon = theme === "dark" ? Sun : Moon;
-  return (
-    <button
-      onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-2.5 rounded-xl bg-surface-card border border-border-subtle text-content-secondary hover:text-content transition-colors"
-      aria-label="Alternar tema"
-    >
-      <Icon className="w-5 h-5" />
-    </button>
-  );
-}
-
-function BackToLogin() {
-  return (
-    <Link
-      href="/login"
-      className="fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-surface-card border border-border-subtle text-content-secondary hover:text-content transition-colors flex items-center gap-2"
-    >
-      <ArrowLeft className="w-5 h-5" />
-      <span className="text-sm hidden sm:inline">Login</span>
-    </Link>
-  );
-}
-
 function Footer() {
   return (
-    <footer className="py-8 text-center border-t border-border-subtle mt-8">
+    <footer className="py-6 text-center border-t border-border-subtle mt-6">
       <p className="text-xs text-content-tertiary">
         PipeBridge CRM — Mundo Invest © {new Date().getFullYear()}
       </p>
@@ -356,18 +318,14 @@ function Footer() {
 
 export default function SobrePage() {
   return (
-    <div className="min-h-screen bg-surface">
-      <ThemeToggle />
-      <BackToLogin />
-      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-        <HeroSection />
-        <FeaturesSection />
-        <FlowSection />
-        <EndpointsSection />
-        <TechSection />
-        <FrontendSection />
-        <Footer />
-      </div>
+    <div>
+      <HeroSection />
+      <FeaturesSection />
+      <FlowSection />
+      <EndpointsSection />
+      <TechSection />
+      <FrontendSection />
+      <Footer />
     </div>
   );
 }
