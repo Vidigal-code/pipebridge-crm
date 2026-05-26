@@ -16,7 +16,7 @@ build/
 htmlcov/
 .mypy_cache/
 
-node_modules/
+/node_modules
 .next/
 out/
 .turbo/
@@ -40,3 +40,4 @@ docker-compose.override.yml
 localstack/data/
 backend/logs/
 .idea/
+node_modules
