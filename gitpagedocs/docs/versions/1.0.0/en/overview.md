@@ -1,9 +1,5 @@
 # Project Overview
 
-<div style="display: flex; justify-content: center; margin: 2rem 0;">
-  <iframe width="800" height="450" src="https://www.youtube.com/embed/xx69DcHDPa8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-</div>
-
 **PipeBridge CRM** is a fullstack client management system with Pipefy integration via GraphQL, DynamoDB persistence (AWS LocalStack), and asynchronous processing via SQS/SNS. Built as a solution for a Client Management & Pipefy Integration technical challenge.
 
 ## Core Features
