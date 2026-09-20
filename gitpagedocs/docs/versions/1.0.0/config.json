@@ -1,8 +1,7 @@
 {
   "auth": {
     "accessKeys": {
-      "docs-key": "open-gitpagedocs-docs",
-      "source-viewer-key": "open-source-viewer"
+      "docs-key": "open-gitpagedocs-docs"
     },
     "rolesStorageKey": "git-page-docs:route-auth:roles",
     "providers": [
@@ -181,6 +180,42 @@
       "RouteguideBrandContainerTop": false
     }
   ],
+  "routes-source-viewer": [
+    {
+      "id": 5,
+      "title": {
+        "pt": "Codigo fonte",
+        "en": "Source code",
+        "es": "Codigo fuente"
+      },
+      "description": {
+        "pt": "Explore a arvore do repositorio, navegue por pastas e visualize arquivos diretamente na documentacao.",
+        "en": "Explore the repository tree, browse folders, and preview files directly inside the documentation.",
+        "es": "Explora el arbol del repositorio, navega por carpetas y previsualiza archivos directamente en la documentacion."
+      },
+      "titleCss": "font-size: 1.85rem; font-weight: 700;",
+      "titleDarkCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
+      "titleLightCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
+      "titlePosition": "center",
+      "titleIsVisible": true,
+      "descriptionCss": "font-size: 1.2rem; font-weight: 500;",
+      "descriptionDarkCss": "font-size: 1.2rem; font-weight: 500; color: var(--text-secondary);",
+      "descriptionLightCss": "font-size: 1.2rem; font-weight: 500; color: var(--text-secondary);",
+      "descriptionPosition": "center",
+      "descriptionIsVisible": true,
+      "fullscreenEnabled": false,
+      "marginTop": "",
+      "marginBottom": "",
+      "blockLink": true,
+      "browseAll": false,
+      "RouteguideBrand": false,
+      "RouteGuideSpeciFicbrand": [],
+      "RouteguideBrandPosition": "center",
+      "RouteguideBrandContainerTop": false,
+      "source-viewer": true,
+      "source-viewer-path": "https://github.com/Vidigal-code/pipebridge-crm/tree/HEAD"
+    }
+  ],
   "routes-video": [
     {
       "id": 1,
@@ -285,6 +320,23 @@
       }
     }
   ],
+  "menus-header-source-viewer": [
+    {
+      "id": 5,
+      "pt": {
+        "title": "Codigo fonte",
+        "path-click": "page:5"
+      },
+      "en": {
+        "title": "Source code",
+        "path-click": "page:5"
+      },
+      "es": {
+        "title": "Codigo fuente",
+        "path-click": "page:5"
+      }
+    }
+  ],
   "menus-header-video": [
     {
       "id": 1,
@@ -305,11 +357,13 @@
   "hierarchyPage": {
     "video": 0,
     "md": 1,
+    "source-viewer": 2,
     "audio": 3
   },
   "hierarchyMenu": {
     "video": 0,
     "md": 1,
+    "source-viewer": 2,
     "audio": 3
   }
 }
