@@ -24,7 +24,7 @@ jobs:
     env:
       GITHUB_ACTIONS: "true"
       GITHUB_REPOSITORY: ${{ github.repository }}
-      GITPAGEDOCS_REPOSITORY_SEARCH: "true"
+      GITPAGEDOCS_REPOSITORY_SEARCH: "false"
     steps:
       - name: Checkout target repository
         uses: actions/checkout@v4
@@ -60,6 +60,25 @@ jobs:
             cp /tmp/default-icon.svg .gitpagedocs-runtime/public/icon.svg
           fi
 
+      # This site is documentation-only. The runtime turns repository search on
+      # for every GitHub Actions build, which also stops /v/<version>/ pages from
+      # being prerendered. Let an explicit GITPAGEDOCS_REPOSITORY_SEARCH=false win.
+      - name: Disable repository search mode in runtime
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const file = '.gitpagedocs-runtime/frontend/src/shared/lib/repository-search/is-repository-search-enabled.ts';
+          const anchor = 'return env.GITHUB_ACTIONS === "true" || env.GITPAGEDOCS_REPOSITORY_SEARCH === "true";';
+          const source = fs.readFileSync(file, 'utf8');
+          if (source.includes('GITPAGEDOCS_REPOSITORY_SEARCH === "false"')) process.exit(0);
+          if (!source.includes(anchor)) {
+            console.error('Runtime changed: cannot disable repository search mode. Update this step.');
+            process.exit(1);
+          }
+          const guard = 'if (env.GITPAGEDOCS_REPOSITORY_SEARCH === "false") return false; ';
+          fs.writeFileSync(file, source.replace(anchor, guard + anchor));
+          NODE
+
       # pnpm is pinned by the runtime (packageManager), not by this repository,
       # so it can only be resolved after the runtime has been cloned.
       - name: Setup pnpm
@@ -74,6 +93,13 @@ jobs:
       - name: Build static site with target repository path
         run: pnpm exec next build frontend && mv frontend/out out
         working-directory: .gitpagedocs-runtime
+
+      # The standalone source viewer only exists in repository search builds. Here
+      # its exported page is the not-found shell, which redirects to itself forever.
+      - name: Send standalone source viewer to the documentation
+        run: |
+          mkdir -p .gitpagedocs-runtime/out/source-viewer
+          printf '%s' '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../"><title>Redirecting</title><a href="../">Documentation</a>' > .gitpagedocs-runtime/out/source-viewer/index.html
 
       - name: Add .nojekyll
         run: touch .gitpagedocs-runtime/out/.nojekyll 2>/dev/null || mkdir -p .gitpagedocs-runtime/out && touch .gitpagedocs-runtime/out/.nojekyll
