@@ -48,6 +48,34 @@
   },
   "routes-md": [
     {
+      "id": 6,
+      "title": {
+        "pt": "Contexto e fluxos do projeto",
+        "en": "Project context and workflows",
+        "es": "Contexto y flujos del proyecto"
+      },
+      "path": {
+        "pt": "gitpagedocs/docs/versions/1.0.0/pt/project-guide.md",
+        "en": "gitpagedocs/docs/versions/1.0.0/en/project-guide.md",
+        "es": "gitpagedocs/docs/versions/1.0.0/es/project-guide.md"
+      },
+      "fullscreenEnabled": true
+    },
+    {
+      "id": 7,
+      "title": {
+        "pt": "Referência do código",
+        "en": "Source reference",
+        "es": "Referencia del código"
+      },
+      "path": {
+        "pt": "gitpagedocs/docs/versions/1.0.0/pt/source-reference.md",
+        "en": "gitpagedocs/docs/versions/1.0.0/en/source-reference.md",
+        "es": "gitpagedocs/docs/versions/1.0.0/es/source-reference.md"
+      },
+      "fullscreenEnabled": true
+    },
+    {
       "id": 1,
       "title": {
         "pt": "Visão Geral do Projeto",
@@ -55,9 +83,9 @@
         "es": "Visión General del Proyecto"
       },
       "description": {
-        "pt": "Introdução ao PipeBridge CRM",
-        "en": "Introduction to PipeBridge CRM",
-        "es": "Introducción a PipeBridge CRM"
+        "pt": "Visão Geral do Projeto",
+        "en": "Project Overview",
+        "es": "Visión General del Proyecto"
       },
       "titleCss": "font-size: 1.85rem; font-weight: 700;",
       "titleDarkCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
@@ -92,9 +120,9 @@
         "es": "Arquitectura del Sistema"
       },
       "description": {
-        "pt": "Stack e Tecnologias",
-        "en": "Stack and Technologies",
-        "es": "Stack y Tecnologías"
+        "pt": "Arquitetura do Sistema",
+        "en": "System Architecture",
+        "es": "Arquitectura del Sistema"
       },
       "titleCss": "font-size: 1.85rem; font-weight: 700;",
       "titleDarkCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
@@ -129,9 +157,9 @@
         "es": "Instalación y Ejecución"
       },
       "description": {
-        "pt": "Como rodar o projeto localmente",
-        "en": "How to run the project locally",
-        "es": "Cómo ejecutar el proyecto localmente"
+        "pt": "Instalação e Execução",
+        "en": "Setup and Execution",
+        "es": "Instalación y Ejecución"
       },
       "titleCss": "font-size: 1.85rem; font-weight: 700;",
       "titleDarkCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
@@ -166,9 +194,9 @@
         "es": "Integración Pipefy"
       },
       "description": {
-        "pt": "Mutations e Webhooks GraphQL",
-        "en": "GraphQL Mutations and Webhooks",
-        "es": "Mutations y Webhooks GraphQL"
+        "pt": "Integração Pipefy",
+        "en": "Pipefy Integration",
+        "es": "Integración Pipefy"
       },
       "titleCss": "font-size: 1.85rem; font-weight: 700;",
       "titleDarkCss": "font-size: 1.85rem; font-weight: 700; color: var(--text);",
@@ -229,7 +257,7 @@
       "RouteguideBrandPosition": "center",
       "RouteguideBrandContainerTop": false,
       "source-viewer": true,
-      "source-viewer-path": "https://github.com/Vidigal-code/pipebridge-crm/tree/HEAD"
+      "source-viewer-path": "https://github.com/Vidigal-code/pipebridge-crm/tree/main"
     }
   ],
   "routes-video": [
@@ -275,6 +303,36 @@
     }
   ],
   "menus-header-md": [
+    {
+      "id": 6,
+      "pt": {
+        "title": "Contexto e fluxos do projeto",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/pt/project-guide.md"
+      },
+      "en": {
+        "title": "Project context and workflows",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/en/project-guide.md"
+      },
+      "es": {
+        "title": "Contexto y flujos del proyecto",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/es/project-guide.md"
+      }
+    },
+    {
+      "id": 7,
+      "pt": {
+        "title": "Referência do código",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/pt/source-reference.md"
+      },
+      "en": {
+        "title": "Source reference",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/en/source-reference.md"
+      },
+      "es": {
+        "title": "Referencia del código",
+        "path-click": "gitpagedocs/docs/versions/1.0.0/es/source-reference.md"
+      }
+    },
     {
       "id": 1,
       "pt": {
